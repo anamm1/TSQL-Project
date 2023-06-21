@@ -1,0 +1,92 @@
+--Retrieve all plants
+SELECT * FROM plants;
+
+
+-- Retrieve plants with low quantity in stock
+SELECT * FROM plants WHERE quantity > 1;
+
+--Arranging plants alphabetically 
+select plantid, name
+from plants
+order by name asc;
+
+--Plants under 10 dollars
+select plantid, name, price
+from plants 
+where price < 10;
+
+--Determining how many orders a customer has placed
+select customerid, sum(quantity) as total_quantity
+from orders
+group by customerid;
+
+--Retrieving most 5 expensive plants
+select top 5 plantid, name, price
+from plants
+order by price desc;
+
+-- Retrieve total quantity sold for each plant
+SELECT p.plantid, p.name, SUM(o.quantity) AS Total_Sold
+FROM plants AS p
+JOIN orders AS o ON p.plantid = o.plantid
+GROUP BY p.plantid, p.name;
+
+-- Retrieve plant details with stock status
+SELECT p.plantid, p.name, p.species, p.quantity,
+       CASE
+           WHEN p.quantity > 0 THEN 'In Stock'
+           ELSE 'Out of Stock'
+       END AS stock_status
+FROM plants AS p;
+
+-- Calculate total sales for a specific date range
+SELECT SUM(p.quantity * o.quantity) AS Total_Sales
+FROM plants AS p
+JOIN orders AS o ON p.plantid = o.plantid
+WHERE o.orderdate BETWEEN '01.01.2021' AND '12.01.2023';
+
+-- Calculate total revenue within a date range
+SELECT SUM(p.quantity * o.quantity) AS Total_Revenue
+FROM plants AS p
+JOIN orders AS o ON p.plantid = o.plantid
+WHERE o.orderdate BETWEEN '2022-06-01' AND '2023-05-10';
+
+-- Retrieve the highest sales value by plant
+select plants.name, sum(plants.price * orders.quantity) as Total_Sales
+from orders
+inner join plants on orders.plantid=plants.plantid
+group by plants.name
+order by total_sales desc;
+
+
+--Profit through sales per customer
+SELECT
+  o.orderid,
+  o.orderdate,
+  c.customername,
+  p.name AS plantname,
+  o.quantity,
+  p.price AS unitprice,
+  (o.quantity * p.price) AS Total_Profit_Per_Customer
+FROM
+  Orders o
+INNER JOIN
+  Customers c ON o.customerid = c.customerid
+INNER JOIN
+  Plants p ON o.plantid = p.plantid;
+
+
+
+-- Joining Customers and Orders to retrieve customer details and order information
+  SELECT
+  c.customername,
+  o.orderid,
+  o.orderdate,
+  p.name AS plantname,
+  o.quantity
+FROM
+  Customers c
+INNER JOIN
+  Orders o ON c.customerid = o.customerid
+INNER JOIN
+  Plants p ON o.plantid = p.plantid;
