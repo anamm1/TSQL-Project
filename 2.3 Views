@@ -1,0 +1,55 @@
+
+--view showing all tables
+CREATE VIEW vw_PlantsOrdersCustomers AS
+SELECT
+    C.CustomerID,
+    C.CustomerName,
+    P.PlantID,
+    P.Name AS PlantName,
+    P.OriginCountry,
+    O.OrderID,
+    O.OrderDate
+FROM
+    Customers C
+    JOIN Orders O ON C.CustomerID = O.CustomerID
+    JOIN Plants P ON O.PlantID = P.PlantID;
+
+SELECT *
+FROM vw_PlantsOrdersCustomers;
+
+-- view showing customer addresses
+CREATE VIEW vw_CustomerAddresses AS
+SELECT
+    C.CustomerID,
+    C.CustomerName,
+    C.Address,
+    C.Country
+FROM
+    Customers C
+    JOIN Orders O ON C.CustomerID = O.CustomerID
+GROUP BY
+    C.CustomerID,
+    C.CustomerName,
+    C.Address,
+    C.Country;
+
+SELECT * FROM vw_CustomerAddresses;
+
+--view that retrives information about plants along with total number of orders
+CREATE VIEW vw_PlantsWithTotalOrders AS
+SELECT
+    P.PlantID,
+    P.Name AS PlantName,
+    P.OriginCountry,
+    COUNT(O.OrderID) AS TotalOrders
+FROM
+    Plants P
+    LEFT JOIN Orders O ON P.PlantID = O.PlantID
+GROUP BY
+    P.PlantID,
+    P.Name,
+    P.OriginCountry;
+
+SELECT * FROM vw_PlantsWithTotalOrders;
+
+
