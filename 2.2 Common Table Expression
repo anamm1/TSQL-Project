@@ -1,0 +1,72 @@
+--Retrieving all orders along with customer and plant details
+WITH OrderDetails AS (
+  SELECT
+    o.orderid,
+    o.orderdate,
+    c.customername,
+    p.name AS plantname,
+    o.quantity
+  FROM
+    Orders o
+  INNER JOIN
+    Customers c ON o.customerid = c.customerid
+  INNER JOIN
+    Plants p ON o.plantid = p.plantid
+)
+SELECT * FROM OrderDetails;
+
+
+
+--Calculating total sales for each customer
+WITH CustomerSales AS (
+  SELECT
+    c.customerid,
+    c.customername,
+    SUM(o.quantity * p.price) AS total_sales
+  FROM
+    Customers c
+  INNER JOIN
+    Orders o ON c.customerid = o.customerid
+  INNER JOIN
+    Plants p ON o.plantid = p.plantid
+  GROUP BY
+    c.customerid,
+    c.customername
+)
+SELECT * FROM CustomerSales;
+
+--Retrieving top 5 customers
+WITH TopCustomers AS (
+  SELECT TOP 5
+    c.customerid,
+    c.customername,
+    SUM(o.quantity) AS totalquantity
+  FROM
+    Customers c
+  INNER JOIN
+    Orders o ON c.customerid = o.customerid
+  GROUP BY
+    c.customerid,
+    c.customername
+  ORDER BY
+    SUM(o.quantity) DESC
+)
+SELECT * FROM TopCustomers;
+
+
+--Sales for each plant
+WITH PlantSales AS (
+  SELECT
+    p.plantid,
+    p.name AS plantname,
+    SUM(o.quantity) AS totalquantity,
+    SUM(o.quantity * p.price) AS totalsales
+  FROM
+    Plants p
+  INNER JOIN
+    Orders o ON p.plantid = o.plantid
+  GROUP BY
+    p.plantid,
+    p.name
+)
+SELECT * FROM PlantSales;
