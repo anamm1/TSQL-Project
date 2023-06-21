@@ -1,0 +1,130 @@
+ use GestionareMagazinPlante
+ 
+ drop table if exists plants 
+ drop table if exists orders
+ drop table if exists customers 
+ drop table if exists Suppliers
+ GO
+ 
+CREATE TABLE Plants (
+    plantid INT PRIMARY KEY not null,
+    name VARCHAR(100),
+    species VARCHAR(100),
+    origincountry VARCHAR(100),
+    price DECIMAL(10, 2),
+    sunlightdemand VARCHAR(100),
+    size VARCHAR(100),
+	quantity INT
+);
+
+INSERT INTO Plants 
+(plantid, 
+name, 
+species, 
+origincountry, 
+price, 
+sunlightdemand, 
+size,
+quantity)
+VALUES 
+	(1, 'Rose', 'Rosa', 'England', 10.99, 'High', 'Medium', 100),
+    (2, 'Tulip', 'Tulipa', 'Netherlands', 5.99, 'Medium', 'Small', 100),
+    (3, 'Lavender', 'Lavandula', 'France', 7.99, 'High', 'Small', 100),
+    (4, 'Sunflower', 'Helianthus', 'United States', 3.99, 'High', 'Large', 100),
+    (5, 'Orchid', 'Orchidaceae', 'Various', 12.99, 'Medium', 'Small', 100),
+    (6, 'Fern', 'Polypodiopsida', 'Various', 6.99, 'Medium', 'Medium', 100),
+    (7, 'Cactus', 'Cactaceae', 'Mexico', 8.99, 'Low', 'Small', 100),
+    (8, 'Daisy', 'Bellis perennis', 'Europe', 4.99, 'Medium', 'Small', 100),
+    (9, 'Bamboo', 'Bambusoideae', 'China', 9.99, 'High', 'Large', 100),
+    (10, 'Palm', 'Arecaceae', 'Tropical regions', 11.99, 'High', 'Large', 100);
+    
+
+CREATE TABLE Customers 
+(
+    customerid INT PRIMARY KEY not null,
+    customername VARCHAR(100),
+    contactnumber VARCHAR(20),
+    email VARCHAR(100),
+    address VARCHAR(200),
+    country VARCHAR(100),
+	plantid INT not null,
+	FOREIGN KEY(plantid) references plants(plantid)
+);
+INSERT INTO Customers 
+	(customerid, 
+	customername, 
+	contactnumber, 
+	email, 
+	address, 
+	country,
+	plantid)
+VALUES
+    (1, 'John Smith', '1234567890', 'john.smith@example.com', '123 Main St', 'USA', 1),
+    (2, 'Jane Doe', '2345678901', 'jane.doe@example.com', '456 Elm St', 'USA', 1),
+    (3, 'Bob Johnson', '3456789012', 'bob.johnson@example.com', '789 Oak Ave', 'USA', 3),
+    (4, 'Mary Brown', '4567890123', 'mary.brown@example.com', '321 Maple Ln', 'USA', 4),
+    (5, 'Tom Davis', '5678901234', 'tom.davis@example.com', '654 Pine Dr', 'USA', 5),
+    (6, 'Samantha Lee', '6789012345', 'samantha.lee@example.com', '987 Cedar Rd', 'USA', 6),
+    (7, 'David Kim', '7890123456', 'david.kim@example.com', '159 Walnut Blvd', 'USA', 7),
+    (8, 'Michelle Chen', '8901234567', 'michelle.chen@example.com', '357 Birch Rd', 'USA', 8),
+    (9, 'Eric Liu', '9012345678', 'eric.liu@example.com', '753 Spruce Dr', 'USA', 9),
+    (10, 'Jennifer Nguyen', '0123456789', 'jennifer.nguyen@example.com', '246 Willow Ave', 'USA', 10);
+    
+
+	
+CREATE TABLE Orders (
+    orderid INT PRIMARY KEY,
+    orderdate DATE,
+    customerid INT,
+    plantid INT,
+    quantity INT,
+    FOREIGN KEY (customerid) REFERENCES customers (customerid),
+    FOREIGN KEY (plantid) REFERENCES plants (plantid)
+);
+INSERT INTO Orders 
+	(orderid,
+	orderdate, 
+	customerid, 
+	plantid, 
+	quantity)
+VALUES
+    (1, '2022-05-20', 1, 1, 5),
+    (2, '2022-05-22', 2, 2, 2),
+    (3, '2022-05-23', 3, 3, 1),
+    (4, '2022-05-25', 4, 4, 3),
+    (5, '2022-05-27', 5, 5, 2),
+    (6, '2022-05-30', 6, 6, 1),
+    (7, '2022-06-02', 7, 7, 4),
+    (8, '2022-06-05', 8, 8, 2),
+    (9, '2022-06-08', 9, 9, 3),
+    (10, '2022-06-11', 10, 10, 1);
+    
+
+
+CREATE TABLE Suppliers 
+(
+	id INT PRIMARY KEY,
+    name VARCHAR(100),
+    number VARCHAR(20),
+    address VARCHAR(255),
+	plantid int,
+	foreign key (plantid) references plants(plantid)
+);
+INSERT INTO Suppliers 
+	(id, 
+	name, 
+	number, 
+	address)
+VALUES
+    (1, 'Plant Nursery', '1234567890', '456 Elm St'),
+    (2, 'Your Favourite Plants', '9876543210', '789 Oak St'),
+    (3, 'Green Thumb Growers', '5551234567', '123 Main St'),
+    (4, 'Floral Gardens', '4449876543', '321 Pine St'),
+    (5, 'Botanical Suppliers.', '1112223333', '987 Maple Ave'),
+    (6, 'Plant Paradise', '9998887777', '654 Cedar Ln'),
+    (7, 'Nature Paradise', '2223334444', '246 Birch Rd'),
+    (8, 'Sunshine Viridis', '7778889999', '135 Spruce Dr'),
+    (9, 'Flower Power', '6665554444', '753 Willow Ave'),
+    (10, 'Green Obsessed', '3331112222', '369 Oak Ln');
+
+	
