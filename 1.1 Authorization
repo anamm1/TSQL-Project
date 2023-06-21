@@ -1,0 +1,2 @@
+ALTER AUTHORIZATION ON DATABASE::GestionareMagazinPlante TO sa
+GO
