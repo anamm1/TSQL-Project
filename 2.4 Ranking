@@ -1,0 +1,25 @@
+--assigning a unique row to each row in the customers table based on the ascending order of customer id
+SELECT
+    CustomerID,
+    CustomerName,
+    ROW_NUMBER() OVER (ORDER BY CustomerID) AS RowNumber
+FROM
+    Customers
+
+--assigning a unique rank to each row in the customers table based on the ascending order of customer id
+SELECT
+    CustomerID,
+    CustomerName,
+    RANK() OVER (ORDER BY CustomerID) AS Rank
+FROM
+    Customers;
+
+
+-- dividing the rows in the customers table into 2 equal halves based on the ascending order of CustomerID
+SELECT
+    CustomerID,
+    CustomerName,
+    NTILE(2) OVER (ORDER BY CustomerID) AS Half
+FROM
+    Customers;
+
