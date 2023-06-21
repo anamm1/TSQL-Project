@@ -1,0 +1,121 @@
+--Retrieve all orders for a specific customer
+CREATE PROCEDURE GetOrdersByCustomer
+  @CustomerID INT
+AS
+BEGIN
+  SELECT
+    o.orderid,
+    o.orderdate,
+    c.customername,
+    p.name AS plantname,
+    o.quantity
+  FROM
+    Orders o
+  INNER JOIN
+    Customers c ON o.customerid = c.customerid
+  INNER JOIN
+    Plants p ON o.plantid = p.plantid
+  WHERE
+    c.customerid = @CustomerID;
+END;
+
+EXEC GetOrdersByCustomer @CustomerID = 1;
+
+
+--Procedure to update the quantity of a plant in the Plants table
+CREATE PROCEDURE UpdatePlantQuantity
+  @PlantID INT,
+  @NewQuantity INT
+AS
+BEGIN
+  UPDATE Plants
+  SET quantity = @NewQuantity
+  WHERE plantid = @PlantID;
+END;
+
+EXEC UpdatePlantQuantity @PlantID = 1, @NewQuantity = 50;
+EXEC UpdatePlantQuantity @PlantID = 2, @NewQuantity = 30;
+EXEC UpdatePlantQuantity @PlantID = 5, @NewQuantity = 20;
+
+
+
+--Procedure to get plants by a price range
+CREATE PROCEDURE GetPlantsByPriceRange
+  @MinPrice DECIMAL(10, 2),
+  @MaxPrice DECIMAL(10, 2)
+AS
+BEGIN
+  SELECT
+    plantid,
+    name,
+    species,
+    origincountry,
+    price,
+    sunlightdemand,
+    size,
+    quantity
+  FROM
+    Plants
+  WHERE
+    price BETWEEN @MinPrice AND @MaxPrice;
+END;
+
+EXEC GetPlantsByPriceRange @minprice=5, @maxprice=8
+
+
+-- Procedure to delete a customer 
+CREATE PROCEDURE DeleteCustomer
+  @CustomerID INT
+AS
+BEGIN
+  BEGIN TRANSACTION;
+  
+  DELETE FROM Orders
+  WHERE customerid = @CustomerID;
+  
+  DELETE FROM Customers
+  WHERE customerid = @CustomerID;
+  
+  COMMIT;
+END;
+
+EXEC DeleteCustomer @CUSTOMERID=10
+
+--Updates prices from origin country for the plants
+CREATE PROCEDURE UpdatePlantPriceByCountry
+    @Country VARCHAR(100),
+    @PercentageIncrease DECIMAL(5, 2)
+AS
+BEGIN
+    UPDATE Plants
+    SET Price = Price * (1 + (@PercentageIncrease / 100)
+    WHERE OriginCountry = @Country;
+END;
+
+EXEC UpdatePlantPriceByCountry @Country = 'USA', @PercentageIncrease = 10.00;
+EXEC UpdatePlantPriceByCountry @Country = 'China', @PercentageIncrease = 5.00;
+EXEC UpdatePlantPriceByCountry @Country = 'France', @PercentageIncrease = 7.00;
+EXEC UpdatePlantPriceByCountry @Country = 'Various', @PercentageIncrease = 2.00;
+
+
+--Retrives top 5 best selling plants
+CREATE PROCEDURE GetTopSellingPlants
+AS
+BEGIN
+    SELECT TOP 5
+        P.PlantID,
+        P.Name AS PlantName,
+        P.Species,
+        SUM(O.Quantity) AS TotalQuantitySold
+    FROM
+        Plants P
+        JOIN Orders O ON P.PlantID = O.PlantID
+    GROUP BY
+        P.PlantID,
+        P.Name,
+        P.Species
+    ORDER BY
+        TotalQuantitySold DESC;
+END;
+
+EXEC GetTopSellingPlants;
