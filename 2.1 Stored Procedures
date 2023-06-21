@@ -98,7 +98,7 @@ EXEC UpdatePlantPriceByCountry @Country = 'France', @PercentageIncrease = 7.00;
 EXEC UpdatePlantPriceByCountry @Country = 'Various', @PercentageIncrease = 2.00;
 
 
---Retrives top 5 best selling plants
+--Retrieves top 5 best selling plants
 CREATE PROCEDURE GetTopSellingPlants
 AS
 BEGIN
